@@ -1,26 +1,25 @@
 version: 1.0.0
-title: What happens if we terminate a dependency?
-description: If a dependency is terminated, dependant applications should still be operational.
+title: What happens if we terminate an application?
+description: If an application is terminated, dependant applications should still be operational.
 tags:
 - k8s
 - pod
-# TODO: Rewrite
+- deployment
 steady-state-hypothesis:
-  title: Pod exists
+  title: All apps are healthys
   probes:
-  - name: pod-exists
+  - name: All apps are healthy
     type: probe
-    tolerance: 1
+    tolerance: true
     provider:
       type: python
-      func: count_pods
-      module: chaosk8s.pod.probes
+      func: all_microservices_healthy
+      module: chaosk8s.probes
       arguments:
-        label_selector: app=go-demo-8
         ns: go-demo-8
 method:
 - type: action
-  name: terminate-pod
+  name: terminate-app-pod
   provider:
     type: python
     module: chaosk8s.pod.actions
