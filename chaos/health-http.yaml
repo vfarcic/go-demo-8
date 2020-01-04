@@ -6,17 +6,16 @@ tags:
 - pod
 - deployment
 steady-state-hypothesis:
-  title: All apps are healthys
+  title: All apps are healthy
   probes:
-  - name: All apps are healthy
+  - name: The app responds to requests
     type: probe
-    tolerance: true
+    tolerance: 200
     provider:
-      type: python
-      func: all_microservices_healthy
-      module: chaosk8s.probes
-      arguments:
-        ns: go-demo-8
+      type: http
+      timeout: 3
+      verify_tls: false
+      url: https://go-demo-8.acme.com/demo/person
 method:
 - type: action
   name: terminate-app-pod
@@ -28,3 +27,5 @@ method:
       label_selector: app=go-demo-8
       rand: true
       ns: go-demo-8
+  pauses: 
+    after: 1
