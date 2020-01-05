@@ -1,5 +1,4 @@
 ---
-# Source: go-demo-8/charts/go-demo-8-db/templates/svc-standalone.yaml
 
 apiVersion: v1
 kind: Service
@@ -7,9 +6,7 @@ metadata:
   name: go-demo-8-db
   labels:
     app: go-demo-8-db
-    chart: go-demo-8-db-5.3.0
-    release: "go-demo-8"
-    heritage: "Tiller"
+    release: primary
 spec:
   type: ClusterIP
   ports:
@@ -18,4 +15,4 @@ spec:
     targetPort: mongodb
   selector:
     app: go-demo-8-db
-    release: "go-demo-8"
+    release: primary

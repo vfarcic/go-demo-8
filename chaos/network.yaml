@@ -1,19 +1,20 @@
 version: 1.0.0
-title: What happens if we terminate an application?
-description: If an application is terminated, dependant applications should still be operational.
+title: "TODO:"
+description: "TODO:"
 tags:
 - k8s
 - pod
 - deployment
+- istio
 configuration:
   ingress_host:
       type: env
       key: INGRESS_HOST
 steady-state-hypothesis:
-  title: All apps are healthy
+  title: "All apps are healthy"
   probes:
   - name: The app responds to requests
-    type: proe
+    type: probe
     tolerance: 200
     provider:
       type: http
@@ -24,14 +25,18 @@ steady-state-hypothesis:
         Host: go-demo-8.acme.com
 method:
 - type: action
-  name: terminate-app-pod
+  name: terminate-network
   provider:
     type: python
-    module: chaosk8s.pod.actions
-    func: terminate_pods
+    module: chaosistio.fault.actions
+    func: add_abort_fault
     arguments:
-      label_selector: app=go-demo-8
-      rand: true
+      virtual_service_name: go-demo-8-db
+      http_status: 500
+      routes:
+        - destination:
+            host: go-demo-8-db
+            subset: primary
+      percent: 100
+      version: networking.istio.io/v1alpha3
       ns: go-demo-8
-  pauses: 
-    after: 2

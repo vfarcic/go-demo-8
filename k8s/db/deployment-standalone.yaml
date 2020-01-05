@@ -1,5 +1,4 @@
 ---
-# Source: go-demo-8/charts/go-demo-8-db/templates/deployment-standalone.yaml
 
 apiVersion: apps/v1
 kind: Deployment
@@ -7,20 +6,17 @@ metadata:
   name: go-demo-8-db
   labels:
     app: go-demo-8-db
-    chart: go-demo-8-db-5.3.0
-    release: "go-demo-8"
-    heritage: "Tiller"
+    release: primary
 spec:
   selector:
     matchLabels:
       app: go-demo-8-db
-      release: "go-demo-8"
+      release: primary
   template:
     metadata:
       labels:
         app: go-demo-8-db
-        release: "go-demo-8"
-        chart: go-demo-8-db-5.3.0
+        release: primary
     spec:
       securityContext:
         fsGroup: 1001

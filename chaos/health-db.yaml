@@ -5,6 +5,10 @@ tags:
 - k8s
 - pod
 - deployment
+configuration:
+  ingress_host:
+      type: env
+      key: INGRESS_HOST
 steady-state-hypothesis:
   title: All apps are healthy
   probes:
@@ -15,7 +19,9 @@ steady-state-hypothesis:
       type: http
       timeout: 3
       verify_tls: false
-      url: https://go-demo-8.acme.com/demo/person
+      url: http://${ingress_host}/demo/person
+      headers:
+        Host: go-demo-8.acme.com
 method:
 - type: action
   name: terminate-app-pod
@@ -38,4 +44,4 @@ method:
       rand: true
       ns: go-demo-8
   pauses: 
-    after: 1
+    after: 2
