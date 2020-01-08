@@ -8,7 +8,7 @@ tags:
 steady-state-hypothesis:
   title: All apps are healthy
   probes:
-  - name: All apps are healthy
+  - name: all-apps-are-healthy
     type: probe
     tolerance: true
     provider:

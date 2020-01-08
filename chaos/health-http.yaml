@@ -13,7 +13,7 @@ steady-state-hypothesis:
   title: All apps are healthy
   probes:
   - name: The app responds to requests
-    type: proe
+    type: probe
     tolerance: 200
     provider:
       type: http

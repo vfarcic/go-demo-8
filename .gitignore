@@ -1,4 +1,5 @@
 /bin
 /chaostoolkit.log
-/journal.json
+/journal*.json
 /tmp.yaml
+/report.pdf

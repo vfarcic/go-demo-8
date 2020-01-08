@@ -24,16 +24,6 @@ steady-state-hypothesis:
         Host: go-demo-8.acme.com
 method:
 - type: action
-  name: terminate-app-pod
-  provider:
-    type: python
-    module: chaosk8s.pod.actions
-    func: terminate_pods
-    arguments:
-      label_selector: app=go-demo-8
-      rand: true
-      ns: go-demo-8
-- type: action
   name: terminate-db-pod
   provider:
     type: python

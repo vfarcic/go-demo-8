@@ -1,0 +1,45 @@
+version: 1.0.0
+title: "TODO:"
+description: "TODO:"
+tags:
+- k8s
+- deployment
+- node
+configuration:
+  node_label:
+      type: env
+      key: NODE_LABEL
+steady-state-hypothesis:
+  title: Nodes are indestructible
+  probes:
+  - name: all-apps-are-healthy
+    type: probe
+    tolerance: true
+    provider:
+      type: python
+      func: all_microservices_healthy
+      module: chaosk8s.probes
+      arguments:
+        ns: go-demo-8
+method:
+- type: action
+  name: drain-node
+  provider:
+    type: python
+    func: drain_nodes
+    module: chaosk8s.node.actions
+    arguments:
+      label_selector: ${node_label}
+      count: 1
+      pod_namespace: go-demo-8
+  pauses: 
+    after: 1
+rollbacks:
+- type: action
+  name: uncordon-node
+  provider:
+    type: python
+    func: uncordon_node
+    module: chaosk8s.node.actions
+    arguments:
+      label_selector: ${node_label}

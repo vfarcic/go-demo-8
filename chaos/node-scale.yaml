@@ -1,12 +1,16 @@
 version: 1.0.0
-title: What happens if we terminate an application?
-description: If an application is terminated, dependant applications should still be operational.
+title: "TODO:"
+description: "TODO:"
 tags:
 - k8s
-- pod
 - deployment
+- node
+configuration:
+  node_label:
+      type: env
+      key: NODE_LABEL
 steady-state-hypothesis:
-  title: All apps are healthy
+  title: Nodes are indestructible
   probes:
   - name: all-apps-are-healthy
     type: probe
@@ -19,14 +23,14 @@ steady-state-hypothesis:
         ns: go-demo-8
 method:
 - type: action
-  name: terminate-app-pod
+  name: count-pods
   provider:
     type: python
-    module: chaosk8s.pod.actions
-    func: terminate_pods
+    func: count_pods
+    module: chaosk8s.pod.probes
     arguments:
       label_selector: app=go-demo-8
-      rand: true
       ns: go-demo-8
+      phase: Running
   pauses: 
     after: 10

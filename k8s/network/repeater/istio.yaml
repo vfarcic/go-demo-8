@@ -3,17 +3,17 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: go-demo-8
+  name: repeater
 spec:
   hosts:
-  - go-demo-8.acme.com
-  - go-demo-8
+  - repeater.acme.com
+  - repeater
   gateways:
-  - go-demo-8
+  - repeater
   http:
   - route:
     - destination:
-        host: go-demo-8
+        host: repeater
         subset: primary
         port:
           number: 80
@@ -23,9 +23,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: go-demo-8
+  name: repeater
 spec:
-  host: go-demo-8
+  host: repeater
   subsets:
   - name: primary
     labels:
@@ -36,7 +36,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: go-demo-8
+  name: repeater
 spec:
   selector:
     istio: ingressgateway
@@ -46,4 +46,4 @@ spec:
       name: http
       protocol: HTTP
     hosts:
-    - go-demo-8.acme.com
+    - repeater.acme.com

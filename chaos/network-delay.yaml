@@ -18,7 +18,7 @@ steady-state-hypothesis:
     tolerance: 200
     provider:
       type: http
-      timeout: 5
+      timeout: 10
       verify_tls: false
       url: http://${ingress_host}?addr=http://go-demo-8
       headers:
@@ -52,5 +52,50 @@ method:
       percent: 50
       version: networking.istio.io/v1alpha3
       ns: go-demo-8
+- type: action
+  name: delay
+  provider:
+    type: python
+    module: chaosistio.fault.actions
+    func: add_delay_fault
+    arguments:
+      virtual_service_name: go-demo-8
+      fixed_delay: 15s
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      percent: 50
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
   pauses: 
     after: 1
+rollbacks:
+- type: action
+  name: remove-abort
+  provider:
+    type: python
+    func: remove_abort_fault
+    module: chaosistio.fault.actions
+    arguments:
+      virtual_service_name: go-demo-8
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
+- type: action
+  name: remove-delay
+  provider:
+    type: python
+    func: remove_delay_fault
+    module: chaosistio.fault.actions
+    arguments:
+      virtual_service_name: go-demo-8
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8

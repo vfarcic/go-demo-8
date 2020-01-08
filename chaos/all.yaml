@@ -1,0 +1,126 @@
+version: 1.0.0
+title: What happens if we terminate an application?
+description: If an application is terminated, dependant applications should still be operational.
+tags:
+- k8s
+- pod
+- deployment
+configuration:
+  ingress_host:
+      type: env
+      key: INGRESS_HOST
+steady-state-hypothesis:
+  title: All apps are healthy
+  probes:
+  - name: The app responds to requests
+    type: probe
+    tolerance: 200
+    provider:
+      type: http
+      timeout: 3
+      verify_tls: false
+      url: http://${ingress_host}/demo/person
+      headers:
+        Host: go-demo-8.acme.com
+method:
+- type: action
+  name: terminate-app-pod
+  provider:
+    type: python
+    module: chaosk8s.pod.actions
+    func: terminate_pods
+    arguments:
+      label_selector: app=go-demo-8
+      rand: true
+      ns: go-demo-8
+  pauses: 
+    after: 2
+steady-state-hypothesis:
+  title: "All apps are healthy"
+  probes:
+  - type: probe
+    name: app-responds-to-requests
+    tolerance: 200
+    provider:
+      type: http
+      timeout: 10
+      verify_tls: false
+      url: http://${ingress_host}?addr=http://go-demo-8
+      headers:
+        Host: repeater.acme.com
+  - type: probe
+    tolerance: 200
+    ref: app-responds-to-requests
+  - type: probe
+    tolerance: 200
+    ref: app-responds-to-requests
+  - type: probe
+    tolerance: 200
+    ref: app-responds-to-requests
+  - type: probe
+    tolerance: 200
+    ref: app-responds-to-requests
+method:
+- type: action
+  name: abort-failure
+  provider:
+    type: python
+    module: chaosistio.fault.actions
+    func: add_abort_fault
+    arguments:
+      virtual_service_name: go-demo-8
+      http_status: 500
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      percent: 50
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
+- type: action
+  name: delay
+  provider:
+    type: python
+    module: chaosistio.fault.actions
+    func: add_delay_fault
+    arguments:
+      virtual_service_name: go-demo-8
+      fixed_delay: 15s
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      percent: 50
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
+  pauses: 
+    after: 1
+rollbacks:
+- type: action
+  name: remove-abort
+  provider:
+    type: python
+    func: remove_abort_fault
+    module: chaosistio.fault.actions
+    arguments:
+      virtual_service_name: go-demo-8
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
+- type: action
+  name: remove-delay
+  provider:
+    type: python
+    func: remove_delay_fault
+    module: chaosistio.fault.actions
+    arguments:
+      virtual_service_name: go-demo-8
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8
