@@ -1,12 +1,12 @@
 version: 1.0.0
-title: What happens if we terminate an application?
-description: If an application is terminated, dependant applications should still be operational.
+title: What happens if we terminate an instance of the application?
+description: If an instance of the application is terminated, a new instance should be created
 tags:
 - k8s
 - pod
-- deployment
+- http
 steady-state-hypothesis:
-  title: All apps are healthy
+  title: The app is healthy
   probes:
   - name: all-apps-are-healthy
     type: probe

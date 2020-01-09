@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: go-demo-8-chaos
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       serviceAccountName: chaostoolkit
       restartPolicy: Never
@@ -20,21 +22,14 @@ spec:
         args:
         - --verbose
         - run
-        - --journal-path
-        - /results/journal-health-http.json
         - /experiment/health-http.yaml
         env:
         - name: CHAOSTOOLKIT_IN_POD
           value: "true"
-        - name: INGRESS_HOST
-          value: go-demo-8.go-demo-8
         volumeMounts:
         - name: config
           mountPath: /experiment
           readOnly: true
-        - name: results
-          mountPath: /results
-          readOnly: false
         resources:
           limits:
             cpu: 20m
@@ -46,19 +41,3 @@ spec:
       - name: config
         configMap:
           name: chaostoolkit-config
-      - name: results
-        persistentVolumeClaim:
-          claimName: go-demo-8-chaos
-
----
-
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: go-demo-8-chaos
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi

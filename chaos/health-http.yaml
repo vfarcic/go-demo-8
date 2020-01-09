@@ -1,18 +1,18 @@
 version: 1.0.0
-title: What happens if we terminate an application?
-description: If an application is terminated, dependant applications should still be operational.
+title: What happens if we terminate an instance of the application?
+description: If an instance of the application is terminated, the applications as a whole should still be operational.
 tags:
 - k8s
 - pod
-- deployment
+- http
 configuration:
   ingress_host:
       type: env
       key: INGRESS_HOST
 steady-state-hypothesis:
-  title: All apps are healthy
+  title: The app is healthy
   probes:
-  - name: The app responds to requests
+  - name: app-responds-to-requests
     type: probe
     tolerance: 200
     provider:

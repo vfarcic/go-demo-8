@@ -18,6 +18,8 @@ spec:
         metadata:
           labels:
             app: go-demo-8-chaos
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           serviceAccountName: chaostoolkit
           restartPolicy: Never
@@ -33,8 +35,6 @@ spec:
             env:
             - name: CHAOSTOOLKIT_IN_POD
               value: "true"
-            - name: INGRESS_HOST
-              value: go-demo-8.go-demo-8
             volumeMounts:
             - name: config
               mountPath: /experiment
@@ -65,7 +65,7 @@ metadata:
   name: go-demo-8-chaos
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

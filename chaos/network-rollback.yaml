@@ -1,17 +1,16 @@
 version: 1.0.0
-title: "TODO:"
-description: "TODO:"
+title: What happens if we abort responses
+description: If responses are aborted and delayed, the dependant application should retry and/or timeout requests
 tags:
 - k8s
-- pod
-- deployment
 - istio
+- http
 configuration:
   ingress_host:
       type: env
       key: INGRESS_HOST
 steady-state-hypothesis:
-  title: "All apps are healthy"
+  title: The app is healthy
   probes:
   - type: probe
     name: app-responds-to-requests
