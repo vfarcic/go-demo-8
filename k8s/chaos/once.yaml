@@ -1,0 +1,64 @@
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: go-demo-8-chaos
+spec:
+  activeDeadlineSeconds: 600
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: go-demo-8-chaos
+    spec:
+      serviceAccountName: chaostoolkit
+      restartPolicy: Never
+      containers:
+      - name: chaostoolkit
+        image: vfarcic/chaostoolkit:1.3.0
+        args:
+        - --verbose
+        - run
+        - --journal-path
+        - /results/journal-health-http.json
+        - /experiment/health-http.yaml
+        env:
+        - name: CHAOSTOOLKIT_IN_POD
+          value: "true"
+        - name: INGRESS_HOST
+          value: go-demo-8.go-demo-8
+        volumeMounts:
+        - name: config
+          mountPath: /experiment
+          readOnly: true
+        - name: results
+          mountPath: /results
+          readOnly: false
+        resources:
+          limits:
+            cpu: 20m
+            memory: 64Mi
+          requests:
+            cpu: 20m
+            memory: 64Mi
+      volumes:
+      - name: config
+        configMap:
+          name: chaostoolkit-config
+      - name: results
+        persistentVolumeClaim:
+          claimName: go-demo-8-chaos
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: go-demo-8-chaos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
