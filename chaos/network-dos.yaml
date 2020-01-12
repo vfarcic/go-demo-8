@@ -23,34 +23,26 @@ steady-state-hypothesis:
       url: http://${ingress_host}?addr=http://go-demo-8
       headers:
         Host: repeater.acme.com
-  - type: probe
-    tolerance: 200
-    ref: app-responds-to-requests
-  - type: probe
-    tolerance: 200
-    ref: app-responds-to-requests
-  - type: probe
-    tolerance: 200
-    ref: app-responds-to-requests
-  - type: probe
-    tolerance: 200
-    ref: app-responds-to-requests
 method:
 - type: action
   name: abort-failure
   provider:
-    type: python
-    module: chaosistio.fault.actions
-    func: add_abort_fault
+    type: process
+    path: kubectl
     arguments:
-      virtual_service_name: go-demo-8
-      http_status: 500
-      routes:
-        - destination:
-            host: go-demo-8
-            subset: primary
-      percent: 50
-      version: networking.istio.io/v1alpha3
-      ns: go-demo-8
-  pauses: 
-    after: 1
+    - run
+    - siege
+    - --namespace
+    - go-demo-8
+    - --image
+    - yokogawa/siege
+    - --generator
+    - run-pod/v1
+    - -it
+    - --rm
+    - -- 
+    - --concurrent
+    - 50
+    - --time
+    - 20S
+    - "http://go-demo-8"

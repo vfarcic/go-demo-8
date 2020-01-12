@@ -1,6 +1,6 @@
 version: 1.0.0
 title: What happens if we abort responses
-description: If responses are aborted and delayed, the dependant application should retry and/or timeout requests
+description: If responses are aborted, the dependant application should retry and/or timeout requests
 tags:
 - k8s
 - istio

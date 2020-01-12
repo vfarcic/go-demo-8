@@ -3,9 +3,8 @@ title: What happens if we abort responses
 description: If responses are aborted, the dependant application should retry and/or timeout requests
 tags:
 - k8s
-- pod
-- deployment
 - istio
+- http
 configuration:
   ingress_host:
       type: env
@@ -49,8 +48,23 @@ method:
         - destination:
             host: go-demo-8
             subset: primary
-      percent: 50
+      percent: 100
       version: networking.istio.io/v1alpha3
       ns: go-demo-8
   pauses: 
     after: 1
+rollbacks:
+- type: action
+  name: remove-abort-failure
+  provider:
+    type: python
+    func: remove_abort_fault
+    module: chaosistio.fault.actions
+    arguments:
+      virtual_service_name: go-demo-8
+      routes:
+        - destination:
+            host: go-demo-8
+            subset: primary
+      version: networking.istio.io/v1alpha3
+      ns: go-demo-8

@@ -1,6 +1,6 @@
 version: 1.0.0
-title: "TODO:"
-description: "TODO:"
+title: What happens if we delete a node
+description: All the instances are distributed among healthy nodes and the applications are healthy
 tags:
 - k8s
 - deployment

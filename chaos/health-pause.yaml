@@ -4,7 +4,7 @@ description: If an instance of the application is terminated, a new instance sho
 tags:
 - k8s
 - pod
-- http
+- deployment
 steady-state-hypothesis:
   title: The app is healthy
   probes:

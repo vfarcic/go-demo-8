@@ -1,6 +1,6 @@
 version: 1.0.0
-title: What happens if we terminate an application?
-description: If an application is terminated, dependant applications should still be operational.
+title: What happens if we terminate an instance of the application?
+description: If an instance of the application is terminated, a new instance should be created
 tags:
 - k8s
 - pod
@@ -10,7 +10,7 @@ configuration:
       type: env
       key: INGRESS_HOST
 steady-state-hypothesis:
-  title: All apps are healthy
+  title: The app is healthy
   probes:
   - name: The app responds to requests
     type: probe
@@ -36,7 +36,7 @@ method:
   pauses: 
     after: 2
 steady-state-hypothesis:
-  title: "All apps are healthy"
+  title: The app is healthy
   probes:
   - type: probe
     name: app-responds-to-requests
@@ -97,7 +97,7 @@ method:
     after: 1
 rollbacks:
 - type: action
-  name: remove-abort
+  name: remove-abort-failure
   provider:
     type: python
     func: remove_abort_fault

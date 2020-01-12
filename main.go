@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"golang.org/x/time/rate"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -22,6 +23,9 @@ var logFatal = log.Fatal
 var logPrintf = log.Printf
 var httpListenAndServe = http.ListenAndServe
 var serviceName = "go-demo"
+var limiter = rate.NewLimiter(5, 10)
+var limitReachedTime = time.Now().Add(time.Second * (-60))
+var limitReached = false
 
 type Person struct {
 	Name string
@@ -105,6 +109,17 @@ func HelloServer(w http.ResponseWriter, req *http.Request) {
 
 func VersionServer(w http.ResponseWriter, req *http.Request) {
 	logPrintf("%s request to %s\n", req.Method, req.RequestURI)
+	if limiter.Allow() == false {
+		logPrintf("Limiter in action")
+		http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
+		limitReached = true
+		limitReachedTime = time.Now()
+		return
+	} else if time.Since(limitReachedTime).Seconds() < 15 {
+		logPrintf("Cooling down after the limiter")
+		http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
+		return
+	}
 	release := req.Header.Get("release")
 	if release == "" {
 		release = "unknown"
