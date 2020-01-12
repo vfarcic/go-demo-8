@@ -40,4 +40,4 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: chaostoolkit-config
+          name: chaostoolkit-experiments

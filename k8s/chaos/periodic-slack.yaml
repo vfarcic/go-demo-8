@@ -39,6 +39,9 @@ spec:
             - name: experiments
               mountPath: /experiment
               readOnly: true
+            - name: settings
+              mountPath: /root/.chaostoolkit
+              readOnly: true
             - name: results
               mountPath: /results
               readOnly: false
@@ -53,6 +56,9 @@ spec:
           - name: experiments
             configMap:
               name: chaostoolkit-experiments
+          - name: settings
+            configMap:
+              name: chaostoolkit-settings
           - name: results
             persistentVolumeClaim:
               claimName: go-demo-8-chaos
