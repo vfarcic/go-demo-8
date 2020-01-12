@@ -83,6 +83,7 @@ func RunServer() {
 	mux.HandleFunc("/version", VersionServer)
 	mux.HandleFunc("/demo/person", PersonServer)
 	mux.HandleFunc("/demo/random-error", RandomErrorServer)
+	mux.HandleFunc("/limiter", LimiterServer)
 	mux.Handle("/metrics", prometheusHandler())
 	mux.HandleFunc("/", VersionServer)
 	logFatal("ListenAndServe: ", httpListenAndServe(":8080", mux))
@@ -109,22 +110,28 @@ func HelloServer(w http.ResponseWriter, req *http.Request) {
 
 func VersionServer(w http.ResponseWriter, req *http.Request) {
 	logPrintf("%s request to %s\n", req.Method, req.RequestURI)
-	if limiter.Allow() == false {
-		logPrintf("Limiter in action")
-		http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
-		limitReached = true
-		limitReachedTime = time.Now()
-		return
-	} else if time.Since(limitReachedTime).Seconds() < 15 {
-		logPrintf("Cooling down after the limiter")
-		http.Error(w, http.StatusText(429), http.StatusTooManyRequests)
-		return
-	}
 	release := req.Header.Get("release")
 	if release == "" {
 		release = "unknown"
 	}
 	msg := fmt.Sprintf("Version: %s; Release: %s\n", os.Getenv("VERSION"), release)
+	io.WriteString(w, msg)
+}
+
+func LimiterServer(w http.ResponseWriter, req *http.Request) {
+	logPrintf("%s request to %s\n", req.Method, req.RequestURI)
+	if limiter.Allow() == false {
+		logPrintf("Limiter in action")
+		http.Error(w, http.StatusText(500), http.StatusTooManyRequests)
+		limitReached = true
+		limitReachedTime = time.Now()
+		return
+	} else if time.Since(limitReachedTime).Seconds() < 15 {
+		logPrintf("Cooling down after the limiter")
+		http.Error(w, http.StatusText(500), http.StatusTooManyRequests)
+		return
+	}
+	msg := fmt.Sprintf("Everything is OK\n")
 	io.WriteString(w, msg)
 }
 

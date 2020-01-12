@@ -20,7 +20,7 @@ steady-state-hypothesis:
       type: http
       timeout: 5
       verify_tls: false
-      url: http://${ingress_host}?addr=http://go-demo-8
+      url: http://${ingress_host}?addr=http://go-demo-8/limiter
       headers:
         Host: repeater.acme.com
 method:
@@ -46,3 +46,5 @@ method:
     - --time
     - 20S
     - "http://go-demo-8"
+  pauses: 
+    after: 5
