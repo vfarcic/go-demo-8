@@ -8,25 +8,25 @@ metadata:
     app: go-demo-8
 spec:
   containers:
-      - name: go-demo-8
-        image: vfarcic/go-demo-8:0.0.1
-        env:
-        - name: DB
-          value: go-demo-8-db
-        ports:
-        - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-        resources:
-            limits:
-              cpu: 100m
-              memory: 50Mi
-            requests:
-              cpu: 50m
-              memory: 20Mi
+  - name: go-demo-8
+    image: vfarcic/go-demo-8:0.0.1
+    env:
+    - name: DB
+      value: go-demo-8-db
+    ports:
+    - containerPort: 8080
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 8080
+    resources:
+        limits:
+          cpu: 100m
+          memory: 50Mi
+        requests:
+          cpu: 50m
+          memory: 20Mi
