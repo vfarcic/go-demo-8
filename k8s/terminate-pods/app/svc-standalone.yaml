@@ -1,0 +1,18 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-demo-8-db
+  labels:
+    app: go-demo-8-db
+    release: primary
+spec:
+  type: ClusterIP
+  ports:
+  - name: mongodb
+    port: 27017
+    targetPort: mongodb
+  selector:
+    app: go-demo-8-db
+    release: primary

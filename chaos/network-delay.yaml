@@ -17,7 +17,7 @@ steady-state-hypothesis:
     tolerance: 200
     provider:
       type: http
-      timeout: 10
+      timeout: 15
       verify_tls: false
       url: http://${ingress_host}?addr=http://go-demo-8
       headers:
