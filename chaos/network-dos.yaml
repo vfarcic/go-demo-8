@@ -45,6 +45,6 @@ method:
     - 50
     - --time
     - 20S
-    - "http://go-demo-8"
+    - "http://go-demo-8/limiter"
   pauses: 
     after: 5
