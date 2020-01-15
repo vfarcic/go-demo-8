@@ -1,0 +1,49 @@
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: go-demo-8
+spec:
+  hosts:
+  - go-demo-8.acme.com
+  - go-demo-8
+  gateways:
+  - go-demo-8
+  http:
+  - route:
+    - destination:
+        host: go-demo-8
+        subset: primary
+        port:
+          number: 80
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: go-demo-8
+spec:
+  host: go-demo-8
+  subsets:
+  - name: primary
+    labels:
+      release: primary
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: go-demo-8
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - go-demo-8.acme.com

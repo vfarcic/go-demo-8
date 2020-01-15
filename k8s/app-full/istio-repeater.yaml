@@ -1,0 +1,54 @@
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: repeater
+spec:
+  hosts:
+  - repeater.acme.com
+  - repeater
+  gateways:
+  - repeater
+  http:
+  - route:
+    - destination:
+        host: repeater
+        subset: primary
+        port:
+          number: 80
+    retries:
+      attempts: 10
+      perTryTimeout: 2s
+      retryOn: 5xx,connect-failure
+    timeout: 10s
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: repeater
+spec:
+  host: repeater
+  subsets:
+  - name: primary
+    labels:
+      release: primary
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: repeater
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - repeater.acme.com
