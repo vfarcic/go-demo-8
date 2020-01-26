@@ -32,5 +32,6 @@ method:
       label_selector: ${node_label}
       count: 1
       pod_namespace: go-demo-8
+      delete_pods_with_local_storage: true
   pauses: 
     after: 1

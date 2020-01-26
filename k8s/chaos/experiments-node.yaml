@@ -54,6 +54,7 @@ data:
         arguments:
           label_selector: beta.kubernetes.io/os=linux
           count: 1
+          delete_pods_with_local_storage: true
       pauses: 
         after: 180
     rollbacks:
@@ -65,5 +66,3 @@ data:
         module: chaosk8s.node.actions
         arguments:
           label_selector: beta.kubernetes.io/os=linux
-
-

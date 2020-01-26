@@ -8,46 +8,13 @@ metadata:
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRole
-metadata:
-  name: chaostoolkit
-rules:
-- apiGroups:
-  - ""
-  - "extensions"
-  - "apps"
-  resources:
-  - pods
-  - deployments
-  - jobs
-  verbs:
-  - list
-  - get
-  - watch
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - "persistentvolumeclaims"
-  verbs:
-  - list
-  - get
-  - create
-  - delete
-  - update
-  - patch
-  - watch
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: chaostoolkit
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: chaostoolkit
+  name: cluster-admin
 subjects:
   - kind: ServiceAccount
     name: chaostoolkit
