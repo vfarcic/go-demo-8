@@ -1,0 +1,43 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: repeater
+  labels:
+    app: repeater
+    release: primary
+spec:
+  selector:
+    matchLabels:
+      app: repeater
+      release: primary
+  template:
+    metadata:
+      labels:
+        app: repeater
+        release: primary
+    spec:
+      containers:
+      - name: repeater
+        image: vfarcic/repeater:0.0.1
+        env:
+        - name: VERSION
+          value: "0.0.1"
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        resources:
+            limits:
+              cpu: 100m
+              memory: 50Mi
+            requests:
+              cpu: 50m
+              memory: 20Mi

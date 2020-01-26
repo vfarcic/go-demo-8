@@ -1,0 +1,72 @@
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: health-instances-chaos
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    metadata:
+      labels:
+        app: health-instances-chaos
+    spec:
+      activeDeadlineSeconds: 600
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: health-instances-chaos
+          annotations:
+            sidecar.istio.io/inject: "false"
+        spec:
+          serviceAccountName: chaostoolkit
+          restartPolicy: Never
+          containers:
+          - name: chaostoolkit
+            image: vfarcic/chaostoolkit:1.3.0
+            args:
+            - --verbose
+            - run
+            - --journal-path
+            - /results/node.json
+            - /experiment/node.yaml
+            env:
+            - name: CHAOSTOOLKIT_IN_POD
+              value: "true"
+            volumeMounts:
+            - name: experiments
+              mountPath: /experiment
+              readOnly: true
+            - name: results
+              mountPath: /results
+              readOnly: false
+            resources:
+              limits:
+                cpu: 20m
+                memory: 64Mi
+              requests:
+                cpu: 20m
+                memory: 64Mi
+          volumes:
+          - name: experiments
+            configMap:
+              name: chaostoolkit-experiments
+          - name: results
+            persistentVolumeClaim:
+              claimName: chaos
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: chaos
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
