@@ -1,0 +1,38 @@
+apiVersion: install.istio.io/v1alpha2
+kind: IstioControlPlane
+spec:
+  security:
+    components:
+      citadel:
+        k8s:
+          replicaCount: 2
+  configManagement:
+    components:
+      galley:
+        k8s:
+          replicaCount: 2
+  gateways:
+    components:
+      ingressGateway:
+        k8s:
+          replicaCount: 2
+  trafficManagement:
+    components:
+      pilot:
+        k8s:
+          replicaCount: 2
+  policy:
+    components:
+      policy:
+        k8s:
+          replicaCount: 2
+  autoInjection:
+    components:
+      injector:
+        k8s:
+          replicaCount: 2
+  telemetry:
+    components:
+      telemetry:
+        k8s:
+          replicaCount: 2
