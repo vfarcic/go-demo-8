@@ -119,7 +119,7 @@ data:
             - destination:
                 host: go-demo-8
                 subset: primary
-          percent: 50
+          percentage: 50
           version: networking.istio.io/v1alpha3
           ns: go-demo-8
       pauses: 
@@ -186,7 +186,7 @@ data:
             - destination:
                 host: go-demo-8
                 subset: primary
-          percent: 50
+          percentage: 50
           version: networking.istio.io/v1alpha3
           ns: go-demo-8
       pauses: 
