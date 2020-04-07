@@ -18,7 +18,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: chaostoolkit
-        image: vfarcic/chaostoolkit:1.4.1-1
+        image: vfarcic/chaostoolkit:1.4.1-2
         args:
         - --verbose
         - run
