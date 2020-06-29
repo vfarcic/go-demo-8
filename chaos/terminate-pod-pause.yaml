@@ -29,4 +29,4 @@ method:
       rand: true
       ns: go-demo-8
   pauses: 
-    after: 15
+    after: 10
