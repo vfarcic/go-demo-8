@@ -1,6 +1,6 @@
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: go-demo-8
@@ -11,9 +11,13 @@ spec:
   - host: go-demo-8.acme.com
     http:
       paths:
-      - backend:
-          serviceName: go-demo-8
-          servicePort: 80
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+           name: go-demo-8
+           port:
+             number: 80
 
 ---
 
